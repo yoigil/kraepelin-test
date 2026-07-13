@@ -151,7 +151,7 @@ current_step = st.session_state.get("step", "login")
 # --- VIEW 1: Registration ---
 if current_step == "login":
     st.title("Registrasi Peserta Tes")
-    name_input = st.text_input("Masukkan Nama Lengkap Anda:", value=st.session_state.get("user_name", ""))
+    name_input = st.text_input("Masukkan Nama Lengkap Anda sesuai KTP:", value=st.session_state.get("user_name", ""))
     
     if st.button("Mulai Tes!", type="primary"):
         if name_input.strip() == "":
@@ -193,13 +193,13 @@ elif current_step == "active_test":
     
     with m1:
         st.markdown("### Angka")
-        st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:20px; color:#555;'>{num_top_preview}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='background-color:#1f497d; padding:15px; margin:5px 0; border-radius:5px; text-align:center; font-size:28px; font-weight:bold; color:white;'>{num_upper_active}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='background-color:#1f497d; padding:15px; margin:5px 0; border-radius:5px; text-align:center; font-size:28px; font-weight:bold; color:white;'>{num_lower_active}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:20px; color:#555;'>{num_bottom_preview}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_top_preview}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#1f497d; padding:20px; margin:5px 0; border-radius:5px; text-align:center; font-size:48px; font-weight:bold; color:white;'>{num_upper_active}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#1f497d; padding:20px; margin:5px 0; border-radius:5px; text-align:center; font-size:48px; font-weight:bold; color:white;'>{num_lower_active}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_bottom_preview}</div>", unsafe_allow_html=True)
 
     with m2:
-        st.markdown("### Masukkan Jawaban")
+        st.markdown("### Jumlahkan 2 Angka pada kotak Biru Tua. Hanya tulis digit terakhir.")
         numpad_layout = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"]]
         for row in numpad_layout:
             btn_cols = st.columns(3)
