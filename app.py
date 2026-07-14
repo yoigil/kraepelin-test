@@ -160,6 +160,12 @@ if current_step == "login":
         icon="⚠️"
     )
 
+    st.warning(
+        "**NOTE:** Apabila mengerjakan tes ini melalui smartphone, "
+        "Pastikan website sudah dalam **Mode Website**.  "
+        "Tekan titik tiga pada pojok kanan atas, dan cek mode website."
+    )
+
     st.markdown("### Panduan Pelaksanaan Tes:")
 
     col_g1, col_g2 = st.columns(2)
