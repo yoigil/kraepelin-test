@@ -94,22 +94,22 @@ def generate_xlsx():
         (
             "PANKER (Kecepatan)", 
             "=SUM('Data Per Kolom'!D2:D51)/MAX('Data Per Kolom'!A2:A51)", 
-            '=IFERROR(IFS(B6<11,"Rendah",B6>14.9,"Tinggi"),"Sedang")'
+            '=IF(B6<11, "Rendah", IF(B6>14.9, "Tinggi", "Sedang"))'
         ),
         (
             "TIANKER (Ketelitian)", 
             "=SUM('Data Per Kolom'!C2:C51)", 
-            '=IFERROR(IFS(B7>=23,"Rendah",B7<=5,"Tinggi"),"Sedang")'
+            '=IF(B7>=23, "Rendah", IF(B7<=5, "Tinggi", "Sedang"))'
         ),
         (
             "JANKER (Keajegan)", 
             "=MAX('Data Per Kolom'!D2:D51)-MIN('Data Per Kolom'!D2:D51)", 
-            '=IFERROR(IFS(B8<9,"Tinggi",B8>12,"Rendah"),"Sedang")'
+            '=IF(B8<9, "Tinggi", IF(B8>12, "Rendah", "Sedang"))'
         ),
         (
             "HANKER (Ketahanan)", 
             "=50*SLOPE('Data Per Kolom'!D2:D51,'Data Per Kolom'!A2:A51)", 
-            '=IFERROR(IFS(B9<-1.947,"Rendah",B9>0.223,"Tinggi"),"Sedang")'
+            '=IF(B9<-1.947, "Rendah", IF(B9>0.223, "Tinggi", "Sedang"))'
         )
     ]
     
