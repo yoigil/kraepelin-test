@@ -193,30 +193,29 @@ if current_step == "login":
     st.divider()
 
     st.markdown("### Identitas Peserta")
+    
+    # We remove the hardcoded key binding here so the widget doesn't clash with the 0.1s rerun cycle
     name_input = st.text_input(
-        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:",
-        key="user_name",
+        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:", 
         value=st.session_state.get("user_name", ""),
         placeholder="Contoh: BUDI SANTOSO"
     )
 
     nik_input = st.text_input(
         "Masukkan NIK KTP anda:", 
-        key="user_nik",
         value=st.session_state.get("user_nik", ""),
         placeholder="Contoh: 3171xxxxxxxxxxxx"
     )
     
     if st.button("Mulai Tes!", type="primary"):
-        # Read directly from session_state strings to validate
-        if not st.session_state["user_name"].strip() or not st.session_state["user_nik"].strip():
+        if not name_input.strip() or not nik_input.strip():
             st.error("Nama dan NIK tidak boleh kosong!")
         else:
-            # Simply change the step indicator and refresh!
+            st.session_state["user_name"] = name_input.strip()
+            st.session_state["user_nik"] = nik_input.strip()
             st.session_state["step"] = "active_test"
             st.session_state["start_time"] = time.time()
             st.rerun()
-
 
 # --- VIEW 2: Active Kraepelin Evaluation ---
 elif current_step == "active_test":
@@ -264,18 +263,15 @@ elif current_step == "active_test":
     with m2:
         st.markdown("### Jawaban")
         
-        # Inject custom CSS to change button text sizes inside this container
         st.html("""
             <style>
                 div[data-testid="stButton"] button p {
                     font-size: 36px !important;
-                    padding: 5px !important;
                     font-weight: bold !important;
                 }
             </style>
         """)
         
-        # Generate Numpad Grid Buttons
         numpad_layout = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"]]
         for row in numpad_layout:
             btn_cols = st.columns(3)
@@ -316,7 +312,7 @@ elif current_step == "finished":
     st.download_button(
         label="Download Excel Hasil Evaluasi",
         data=excel_data,
-        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'user_nik', 'peserta').replace(' ', '_')}.xlsx",
+        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'peserta').replace(' ', '_')}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         type="primary"
     )
