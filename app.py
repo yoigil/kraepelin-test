@@ -242,8 +242,8 @@ elif current_step == "active_test":
     with m1:
         st.markdown("### Angka")
         st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_top_preview}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='background-color:#1f497d; padding:20px; margin:5px 0; border-radius:5px; text-align:center; font-size:48px; font-weight:bold; color:white;'>{num_upper_active}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='background-color:#1f497d; padding:20px; margin:5px 0; border-radius:5px; text-align:center; font-size:48px; font-weight:bold; color:white;'>{num_lower_active}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#1f497d; padding:15px; margin:5px 0; border-radius:5px; text-align:center; font-size:36px; font-weight:bold; color:white;'>{num_upper_active}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color:#1f497d; padding:15px; margin:5px 0; border-radius:5px; text-align:center; font-size:36px; font-weight:bold; color:white;'>{num_lower_active}</div>", unsafe_allow_html=True)
         st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_bottom_preview}</div>", unsafe_allow_html=True)
 
     with m2:
