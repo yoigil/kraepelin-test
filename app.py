@@ -9,7 +9,7 @@ from openpyxl.chart import LineChart, Reference
 import msoffcrypto
 
 # --- App Settings ---
-TOTAL_COLUMNS = 50
+TOTAL_COLUMNS = 5
 TIME_PER_COLUMN = 15
 
 st.set_page_config(page_title="Tes Kraepelin", layout="centered")
@@ -18,7 +18,6 @@ st.set_page_config(page_title="Tes Kraepelin", layout="centered")
 defaults = {
     "step": "login",
     "user_name": "",
-    "user_nik": "",
     "current_column": 0,
     "row_index": 0,
     "start_time": 0.0,
@@ -32,13 +31,125 @@ for key, val in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
-# --- Safe View Router (MUST BE HERE, AFTER INITIALIZATION) ---
-current_step = st.session_state.get("step", "login")
+# --- Helper Functions ---
+def next_column():
+    st.session_state["current_column"] += 1
+    st.session_state["row_index"] = 0
+    st.session_state["start_time"] = time.time()
+    if st.session_state["current_column"] >= TOTAL_COLUMNS:
+        st.session_state["step"] = "finished"
+
+def process_answer(user_input, correct_digit):
+    col = st.session_state["current_column"]
+    st.session_state["attempts"][col] += 1
+    
+    if user_input == correct_digit:
+        st.session_state["corrects"][col] += 1
+    else:
+        st.session_state["errors"][col] += 1
+        
+    st.session_state["row_index"] += 1
+
+def generate_xlsx():
+    wb = openpyxl.Workbook()
+    
+    # Sheet 1: Raw Data
+    ws_data = wb.active
+    ws_data.title = "Data Per Kolom"
+    ws_data.views.sheetView[0].showGridLines = True
+    ws_data.append(["Kolom", "Jumlah Benar", "Jumlah Salah", "Total Jumlah"])
+    
+    header_font = Font(name="Arial", size=11, bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="365F91", end_color="365F91", fill_type="solid")
+    center_align = Alignment(horizontal="center", vertical="center")
+    
+    for c_num in range(1, 5):
+        cell = ws_data.cell(row=1, column=c_num)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+        
+    for i in range(TOTAL_COLUMNS):
+        ws_data.append([i+1, st.session_state["corrects"][i], st.session_state["errors"][i], st.session_state["attempts"][i]])
+        
+    # Sheet 2: Summary Dashboard (Ringkasan Hasil)
+    ws_sum = wb.create_sheet(title="Ringkasan Hasil", index=0)
+    ws_sum.views.sheetView[0].showGridLines = True
+    
+    ws_sum["A1"] = "Laporan Hasil Tes Kraepelin"
+    ws_sum["A1"].font = Font(name="Arial", size=16, bold=True, color="1F497D")
+    ws_sum["A2"] = f"Nama Peserta: {st.session_state.get('user_name', '')}"
+    ws_sum["A2"].font = Font(name="Arial", size=11, bold=True)
+    ws_sum["A3"] = f"Waktu Selesai : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    ws_sum["A3"].font = Font(name="Arial", size=10, italic=True)
+    
+    headers = ["Points", "Score", "Criteria"]
+    for c_idx, h in enumerate(headers, 1):
+        cell = ws_sum.cell(row=5, column=c_idx, value=h)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+
+    metrics = [
+        (
+            "PANKER (Kecepatan)", 
+            "=SUM('Data Per Kolom'!D2:D51)/MAX('Data Per Kolom'!A2:A51)", 
+            '=IFERROR(IFS(B6<11,"Rendah",B6>14.9,"Tinggi"),"Sedang")'
+        ),
+        (
+            "TIANKER (Ketelitian)", 
+            "=SUM('Data Per Kolom'!C2:C51)", 
+            '=IFERROR(IFS(B7>=23,"Rendah",B7<=5,"Tinggi"),"Sedang")'
+        ),
+        (
+            "JANKER (Keajegan)", 
+            "=MAX('Data Per Kolom'!D2:D51)-MIN('Data Per Kolom'!D2:D51)", 
+            '=IFERROR(IFS(B8<9,"Tinggi",B8>12,"Rendah"),"Sedang")'
+        ),
+        (
+            "HANKER (Ketahanan)", 
+            "=50*SLOPE('Data Per Kolom'!D2:D51,'Data Per Kolom'!A2:A51)", 
+            '=IFERROR(IFS(B9<-1.947,"Rendah",B9>0.223,"Tinggi"),"Sedang")'
+        )
+    ]
+    
+    for idx, (label, score_formula, criteria_formula) in enumerate(metrics, start=6):
+        ws_sum.cell(row=idx, column=1, value=label).font = Font(name="Arial", bold=True)
+        ws_sum.cell(row=idx, column=2, value=score_formula).alignment = center_align
+        ws_sum.cell(row=idx, column=3, value=criteria_formula).alignment = center_align
+        
+    chart = LineChart()
+    chart.title = "Grafik Ketahanan Kerja (Hanker)"
+    chart.width = 15; chart.height = 8; chart.legend = None
+    chart.add_data(Reference(ws_data, min_col=4, min_row=1, max_row=51), titles_from_data=True)
+    chart.set_categories(Reference(ws_data, min_col=1, min_row=2, max_row=51))
+    
+    ws_sum.add_chart(chart, "A11")
+    
+    ws_sum.column_dimensions["A"].width = 25
+    ws_sum.column_dimensions["B"].width = 15
+    ws_sum.column_dimensions["C"].width = 15
+    
+    # Save the standard workbook into an unencrypted memory stream
+    raw_buffer = io.BytesIO()
+    wb.save(raw_buffer)
+    raw_buffer.seek(0)
+    
+    # --- Master Password Protection Injection ---
+    encrypted_buffer = io.BytesIO()
+    file_crypto = msoffcrypto.OfficeFile(raw_buffer)
+    
+    # Pass the output stream directly as a positional argument
+    file_crypto.encrypt("HR3918", encrypted_buffer)
+    encrypted_buffer.seek(0)
+    
+    return encrypted_buffer
 
 # --- Safe View Router ---
 current_step = st.session_state.get("step", "login")
 
-def render_login_view():
+# --- VIEW 1: Registration ---
+if current_step == "login":
     st.title("Psikotest Kraepelin")
     st.divider()
 
@@ -80,21 +191,31 @@ def render_login_view():
 
     st.markdown("### Identitas Peserta")
     
-    # We use temporary local variables instead of direct state mapping inside text inputs
-    name_val = st.text_input("Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:", placeholder="Contoh: BUDI SANTOSO")
-    nik_val = st.text_input("Masukkan NIK KTP anda:", placeholder="Contoh: 3171xxxxxxxxxxxx")
+    # We remove the hardcoded key binding here so the widget doesn't clash with the 0.1s rerun cycle
+    name_input = st.text_input(
+        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:", 
+        value=st.session_state.get("user_name", ""),
+        placeholder="Contoh: BUDI SANTOSO"
+    )
+
+    nik_input = st.text_input(
+        "Masukkan NIK KTP anda:", 
+        value=st.session_state.get("user_nik", ""),
+        placeholder="Contoh: 3171xxxxxxxxxxxx"
+    )
     
     if st.button("Mulai Tes!", type="primary"):
-        if not name_val.strip() or not nik_val.strip():
+        if not name_input.strip() or not nik_input.strip():
             st.error("Nama dan NIK tidak boleh kosong!")
         else:
-            st.session_state["user_name"] = name_val.strip()
-            st.session_state["user_nik"] = nik_val.strip()
+            st.session_state["user_name"] = name_input.strip()
+            st.session_state["user_nik"] = nik_input.strip()
             st.session_state["step"] = "active_test"
             st.session_state["start_time"] = time.time()
             st.rerun()
 
-def render_active_test_view():
+# --- VIEW 2: Active Kraepelin Evaluation ---
+elif current_step == "active_test":
     with st.expander("PANDUAN SINGKAT CARA MENJAWAB (Klik untuk tutup/buka)", expanded=True):
         st.info(
             "**Jumlahkan dua angka aktif** (berwarna biru). Input **digit terakhir** dari hasil penjumlahan.\n\n"
@@ -138,6 +259,7 @@ def render_active_test_view():
 
     with m2:
         st.markdown("### Jawaban")
+        
         st.html("""
             <style>
                 div[data-testid="stButton"] button p {
@@ -176,7 +298,8 @@ def render_active_test_view():
     time.sleep(0.1)
     st.rerun()
 
-def render_finished_view():
+# --- VIEW 3: Final Download Trigger ---
+elif current_step == "finished":
     st.balloons()
     st.title("Tes Selesai!")
     st.success(f"Selamat {st.session_state.get('user_name', '')}, Anda telah menyelesaikan seluruh rangkaian ujian Kraepelin!")
@@ -194,11 +317,3 @@ def render_finished_view():
     if st.button("Ulangi Tes Baru"):
         st.session_state.clear()
         st.rerun()
-
-# --- Execution Gatekeeper ---
-if current_step == "login":
-    render_login_view()
-elif current_step == "active_test":
-    render_active_test_view()
-elif current_step == "finished":
-    render_finished_view()
