@@ -309,7 +309,7 @@ elif current_step == "finished":
     st.download_button(
         label="Download Excel Hasil Evaluasi",
         data=excel_data,
-        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'peserta').replace(' ', '_')}.xlsx",
+        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'user_nik', 'peserta').replace(' ', '_')}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         type="primary"
     )
