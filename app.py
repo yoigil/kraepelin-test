@@ -154,7 +154,7 @@ if current_step == "login":
     st.divider()
 
     st.warning(
-        "⚠️ **PERINGATAN PENTING:** Tes ini menggunakan penghitung waktu otomatis. "
+        "**PERINGATAN PENTING:** Tes ini menggunakan penghitung waktu otomatis. "
         "Setiap kolom berjalan selama tepat **15 detik**. Ketika waktu habis, sistem akan "
         "memindahkan Anda ke kolom berikutnya secara paksa. Jangan refresh halaman selama tes berlangsung!",
         icon="⚠️"
@@ -163,7 +163,8 @@ if current_step == "login":
     st.warning(
         "**NOTE:** Apabila mengerjakan tes ini melalui smartphone, "
         "Pastikan website sudah dalam **Mode Website**.  "
-        "Tekan titik tiga pada pojok kanan atas, dan cek mode website."
+        "Tekan titik tiga pada pojok kanan atas, dan cek mode website.",
+        icon="⚠️"
     )
 
     st.markdown("### Panduan Pelaksanaan Tes:")
