@@ -18,6 +18,7 @@ st.set_page_config(page_title="Tes Kraepelin", layout="centered")
 defaults = {
     "step": "login",
     "user_name": "",
+    "user_nik": "",
     "current_column": 0,
     "row_index": 0,
     "start_time": 0.0,
@@ -193,22 +194,25 @@ if current_step == "login":
 
     st.markdown("### Identitas Peserta")
     name_input = st.text_input(
-        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:", 
+        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:",
+        key="user_name",
         value=st.session_state.get("user_name", ""),
         placeholder="Contoh: BUDI SANTOSO"
     )
 
     nik_input = st.text_input(
         "Masukkan NIK KTP anda:", 
+        key="user_nik",
         value=st.session_state.get("user_nik", ""),
         placeholder="Contoh: 3171xxxxxxxxxxxx"
     )
     
     if st.button("Mulai Tes!", type="primary"):
-        if not name_input.strip() or not nik_input.strip():
+        # Read directly from session_state strings to validate
+        if not st.session_state["user_name"].strip() or not st.session_state["user_nik"].strip():
             st.error("Nama dan NIK tidak boleh kosong!")
         else:
-            st.session_state["user_name"] = name_input
+            # Simply change the step indicator and refresh!
             st.session_state["step"] = "active_test"
             st.session_state["start_time"] = time.time()
             st.rerun()
