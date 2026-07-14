@@ -201,7 +201,7 @@ if current_step == "login":
     )
     
     if st.button("Mulai Tes!", type="primary"):
-        if name_input.strip() or nik_input.strip() == "":
+        if not name_input.strip() or not nik_input.strip():
             st.error("Nama dan NIK tidak boleh kosong!")
         else:
             st.session_state["user_name"] = name_input
