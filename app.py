@@ -150,17 +150,58 @@ current_step = st.session_state.get("step", "login")
 
 # --- VIEW 1: Registration ---
 if current_step == "login":
-    st.title("Registrasi Peserta Tes")
-    name_input = st.text_input("Masukkan Nama Lengkap Anda sesuai KTP:", value=st.session_state.get("user_name", ""))
+    st.title("Psikotest Kraepelin")
+    st.divider()
+
+    st.warning(
+        "⚠️ **PERINGATAN PENTING:** Tes ini menggunakan penghitung waktu otomatis. "
+        "Setiap kolom berjalan selama tepat **15 detik**. Ketika waktu habis, sistem akan "
+        "memindahkan Anda ke kolom berikutnya secara paksa. Jangan refresh halaman selama tes berlangsung!",
+        icon="⚠️"
+    )
+
+    st.markdown("### Panduan Pelaksanaan Tes:")
+
+    col_g1, col_g2 = st.columns(2)
+    with col_g1:
+        st.markdown(
+            "**Cara Menjawab:**\n"
+            "1. Anda akan melihat **dua angka aktif** berwarna biru di tengah layar.\n"
+            "2. **Jumlahkan kedua angka** tersebut (Angka Atas + Angka Bawah).\n"
+            "3. Ambil **angka digit terakhir** saja dari hasil penjumlahan.\n"
+            "   * *Contoh:* $4 + 5 = \\mathbf{9}$ (Ketik **9**)\n"
+            "   * *Contoh:* $8 + 7 = 1\\mathbf{5}$ (Ketik **5**)"
+        )
+    with col_g2:
+        st.markdown(
+            "**Metode Input & Kontrol:**\n"
+            "* **Layar Sentuh/Mouse:** Anda bisa mengklik tombol angka yang tertera pada numpad digital di layar.\n"
+            "* Tes terdiri dari **50 Kolom berturut-turut**."
+        )
+        
+    st.divider()
+
+    st.markdown("### Identitas Peserta")
+    name_input = st.text_input(
+        "Masukkan Nama Lengkap Anda sesuai KTP dengan huruf kapital:", 
+        value=st.session_state.get("user_name", ""),
+        placeholder="Contoh: BUDI SANTOSO"
+    )
+
+    nik_input = st.text_input(
+        "Masukkan NIK KTP anda:", 
+        value=st.session_state.get("user_nik", "")
+    )
     
     if st.button("Mulai Tes!", type="primary"):
-        if name_input.strip() == "":
-            st.error("Nama tidak boleh kosong!")
+        if name_input.strip() or nik_input == "":
+            st.error("Nama dan NIK tidak boleh kosong!")
         else:
             st.session_state["user_name"] = name_input
             st.session_state["step"] = "active_test"
             st.session_state["start_time"] = time.time()
             st.rerun()
+
 
 # --- VIEW 2: Active Kraepelin Evaluation ---
 elif current_step == "active_test":
@@ -199,7 +240,7 @@ elif current_step == "active_test":
         st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_bottom_preview}</div>", unsafe_allow_html=True)
 
     with m2:
-        st.markdown("### Jumlahkan 2 Angka pada kotak Biru Tua. Hanya tulis digit terakhir.")
+        st.markdown("### Jawaban")
         numpad_layout = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"]]
         for row in numpad_layout:
             btn_cols = st.columns(3)
@@ -240,7 +281,7 @@ elif current_step == "finished":
     st.download_button(
         label="Download Excel Hasil Evaluasi",
         data=excel_data,
-        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'peserta').replace(' ', '_')}.xlsx",
+        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'user_nik', 'peserta').replace(' ', '_')}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         type="primary"
     )
