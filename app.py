@@ -7,6 +7,10 @@ import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.chart import LineChart, Reference
 import msoffcrypto
+import tempfile
+import os
+import pyzipper
+from zipencrypt import ZipFile
 
 # --- App Settings ---
 TOTAL_COLUMNS = 50
@@ -50,7 +54,7 @@ def process_answer(user_input, correct_digit):
         
     st.session_state["row_index"] += 1
 
-def generate_xlsx():
+def generate_zipped_xlsx():
     wb = openpyxl.Workbook()
     
     # Sheet 1: Raw Data
@@ -80,8 +84,8 @@ def generate_xlsx():
     ws_sum["A1"].font = Font(name="Arial", size=16, bold=True, color="1F497D")
     ws_sum["A2"] = f"Nama Peserta: {st.session_state.get('user_name', '')}"
     ws_sum["A2"].font = Font(name="Arial", size=11, bold=True)
-    ws_sum["A3"] = f"Waktu Selesai : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-    ws_sum["A3"].font = Font(name="Arial", size=10, italic=True)
+    ws_sum["A3"] = f"NIK Peserta: {st.session_state.get('user_nik', '')}"
+    ws_sum["A3"].font = Font(name="Arial", size=11, bold=True)
     
     headers = ["Points", "Score", "Criteria"]
     for c_idx, h in enumerate(headers, 1):
@@ -124,7 +128,7 @@ def generate_xlsx():
     chart.add_data(Reference(ws_data, min_col=4, min_row=1, max_row=51), titles_from_data=True)
     chart.set_categories(Reference(ws_data, min_col=1, min_row=2, max_row=51))
     
-    ws_sum.add_chart(chart, "A11")
+    ws_sum.add_chart(chart, "A12")
     
     ws_sum.column_dimensions["A"].width = 25
     ws_sum.column_dimensions["B"].width = 15
@@ -134,16 +138,27 @@ def generate_xlsx():
     raw_buffer = io.BytesIO()
     wb.save(raw_buffer)
     raw_buffer.seek(0)
+
+    # 2. Save the workbook to an in-memory byte buffer
+    excel_buffer = io.BytesIO()
+    wb.save(excel_buffer)
+    excel_buffer.getvalue()  # Get raw bytes
     
-    # --- Master Password Protection Injection ---
-    encrypted_buffer = io.BytesIO()
-    file_crypto = msoffcrypto.OfficeFile(raw_buffer)
+    # 3. Create a second in-memory buffer to hold the final zipped file
+    zip_buffer = io.BytesIO()
     
-    # Pass the output stream directly as a positional argument
-    file_crypto.encrypt("HR3918", encrypted_buffer)
-    encrypted_buffer.seek(0)
+    # 4. Generate names and password
+    clean_name = st.session_state.get('user_name', 'peserta').replace(' ', '_')
+    internal_excel_name = f"Laporan_Kraepelin_{clean_name}.xlsx"
+    password = b"HR3918"  # Must be bytes
     
-    return encrypted_buffer
+    # 5. Write using legacy ZipCrypto (which Windows natively understands)
+    with ZipFile(zip_buffer, mode="w") as zf:
+        zf.writestr(internal_excel_name, excel_buffer.getvalue(), pwd=password)
+        
+    # 6. Reset the zip buffer pointer and return the binary data
+    zip_buffer.seek(0)
+    return zip_buffer.getvalue()
 
 # --- Safe View Router ---
 current_step = st.session_state.get("step", "login")
@@ -304,13 +319,17 @@ elif current_step == "finished":
     st.title("Tes Selesai!")
     st.success(f"Selamat {st.session_state.get('user_name', '')}, Anda telah menyelesaikan seluruh rangkaian ujian Kraepelin!")
     
-    excel_data = generate_xlsx()
+    # This now generates the secure zip binary data stream
+    excel_data = generate_zipped_xlsx()
+    
+    # Safely grab the NIK or fall back to 'peserta'
+    clean_nik = str(st.session_state.get('user_nik', 'peserta')).strip().replace(' ', '_')
     
     st.download_button(
-        label="Download Excel Hasil Evaluasi",
+        label="Download ZIP Hasil Evaluasi",                 # Updated label text
         data=excel_data,
-        file_name=f"Laporan_Kraepelin_{st.session_state.get('user_name', 'peserta').replace(' ', '_')}.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        file_name=f"Laporan_Kraepelin_{clean_nik}.zip",      # 1. FIXED: Changed extension to .zip
+        mime="application/zip",                              # 2. FIXED: Changed MIME type to zip
         type="primary"
     )
     
