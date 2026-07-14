@@ -247,13 +247,13 @@ elif current_step == "active_test":
         st.markdown(f"<div style='background-color:#f0f2f6; padding:10px; border-radius:5px; text-align:center; font-size:28px; color:#555;'>{num_bottom_preview}</div>", unsafe_allow_html=True)
 
     with m2:
-        st.markdown("### 🎯 Masukkan Jawaban")
+        st.markdown("### Jawaban")
         
         # Inject custom CSS to change button text sizes inside this container
         st.html("""
             <style>
                 div[data-testid="stButton"] button p {
-                    font-size: 24px !important;
+                    font-size: 36px !important;
                     font-weight: bold !important;
                 }
             </style>
