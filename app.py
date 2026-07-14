@@ -1,3 +1,40 @@
+import streamlit as st
+import random
+import time
+import datetime
+import io
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill
+from openpyxl.chart import LineChart, Reference
+import msoffcrypto
+
+# --- App Settings ---
+TOTAL_COLUMNS = 50
+TIME_PER_COLUMN = 15
+
+st.set_page_config(page_title="Tes Kraepelin", layout="centered")
+
+# --- Initialize Global Session Variables Robustly ---
+defaults = {
+    "step": "login",
+    "user_name": "",
+    "user_nik": "",
+    "current_column": 0,
+    "row_index": 0,
+    "start_time": 0.0,
+    "attempts": [0] * TOTAL_COLUMNS,
+    "corrects": [0] * TOTAL_COLUMNS,
+    "errors": [0] * TOTAL_COLUMNS,
+    "numbers_matrix": [[random.randint(1, 9) for _ in range(120)] for _ in range(TOTAL_COLUMNS)]
+}
+
+for key, val in defaults.items():
+    if key not in st.session_state:
+        st.session_state[key] = val
+
+# --- Safe View Router (MUST BE HERE, AFTER INITIALIZATION) ---
+current_step = st.session_state.get("step", "login")
+
 # --- Safe View Router ---
 current_step = st.session_state.get("step", "login")
 
