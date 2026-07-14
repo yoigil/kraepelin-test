@@ -9,7 +9,7 @@ from openpyxl.chart import LineChart, Reference
 import msoffcrypto
 
 # --- App Settings ---
-TOTAL_COLUMNS = 5
+TOTAL_COLUMNS = 50
 TIME_PER_COLUMN = 15
 
 st.set_page_config(page_title="Tes Kraepelin", layout="centered")
