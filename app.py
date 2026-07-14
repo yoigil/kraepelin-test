@@ -166,6 +166,7 @@ if current_step == "login":
         "Tekan titik tiga pada pojok kanan atas, dan cek mode website.",
         icon="⚠️"
     )
+    st.divider()
 
     st.markdown("### Panduan Pelaksanaan Tes:")
 
@@ -197,7 +198,8 @@ if current_step == "login":
 
     nik_input = st.text_input(
         "Masukkan NIK KTP anda:", 
-        value=st.session_state.get("user_nik", "")
+        value=st.session_state.get("user_nik", ""),
+        placeholder="Contoh: 3171xxxxxxxxxxxx"
     )
     
     if st.button("Mulai Tes!", type="primary"):
@@ -212,6 +214,13 @@ if current_step == "login":
 
 # --- VIEW 2: Active Kraepelin Evaluation ---
 elif current_step == "active_test":
+    with st.expander("PANDUAN SINGKAT CARA MENJAWAB (Klik untuk tutup/buka)", expanded=True):
+        st.info(
+            "**Jumlahkan dua angka aktif** (berwarna biru). Input **digit terakhir** dari hasil penjumlahan.\n\n"
+            "* *Contoh:* $4 + 5 = \\mathbf{9}$ (Ketik **9**) | $8 + 7 = 1\\mathbf{5}$ (Ketik **5**)\n"
+            "* Gunakan **Keyboard/Numpad** fisik Anda atau klik tombol di bawah untuk menjawab."
+        )
+    
     col_idx = st.session_state.get("current_column", 0)
     row_idx = st.session_state.get("row_index", 0)
     
