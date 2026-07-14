@@ -263,6 +263,7 @@ elif current_step == "active_test":
             <style>
                 div[data-testid="stButton"] button p {
                     font-size: 36px !important;
+                    padding: 5px !important;
                     font-weight: bold !important;
                 }
             </style>
