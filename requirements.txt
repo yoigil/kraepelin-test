@@ -3,3 +3,4 @@ openpyxl
 zipencrypt
 msoffcrypto-tool
 pyzipper
+streamlit-autorefresh
