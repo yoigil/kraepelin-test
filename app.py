@@ -14,7 +14,7 @@ except ImportError:
     HAS_AUTOREFRESH = False
 
 # --- App Settings ---
-TOTAL_COLUMNS = 2
+TOTAL_COLUMNS = 50
 TIME_PER_COLUMN = 15
 
 st.set_page_config(page_title="Tes Kraepelin", layout="centered")
