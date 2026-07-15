@@ -171,13 +171,13 @@ if current_step == "login":
     st.warning(
         "**PERINGATAN PENTING:** Tes ini menggunakan penghitung waktu otomatis. "
         "Setiap kolom berjalan selama tepat **15 detik**. Ketika waktu habis, sistem akan "
-        "memindahkan Anda ke kolom berikutnya secara paksa. Jangan refresh halaman selama tes berlangsung!",
+        "memindahkan Anda ke kolom berikutnya secara paksa. **Jangan refresh halaman selama tes berlangsung!**",
         icon="⚠️"
     )
 
     st.warning(
         "**NOTE:** Apabila mengerjakan tes ini melalui smartphone, "
-        "Tolong gunakan Google Chrome dan pastikan website sudah dalam **Mode Website**.  "
+        "**Tolong gunakan Google Chrome dan pastikan website sudah dalam Mode Website**.  "
         "Tekan titik tiga pada pojok kanan atas, dan cek mode website.",
         icon="⚠️"
     )
