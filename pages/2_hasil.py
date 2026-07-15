@@ -48,10 +48,26 @@ def generate_zipped_xlsx():
         cell.alignment = center_align
 
     metrics = [
-        ("PANKER (Kecepatan)", "=SUM('Data Per Kolom'!D2:D51)/MAX('Data Per Kolom'!A2:A51)", '=IF(B6<11, "Rendah", IF(B6>14.9, "Tinggi", "Sedang"))'),
-        ("TIANKER (Ketelitian)", "=SUM('Data Per Kolom'!C2:C51)", '=IF(B7>=23, "Rendah", IF(B7<=5, "Tinggi", "Sedang"))'),
-        ("JANKER (Keajegan)", "=MAX('Data Per Kolom'!D2:D51)-MIN('Data Per Kolom'!D2:D51)", '=IF(B8<9, "Tinggi", IF(B8>12, "Rendah", "Sedang"))'),
-        ("HANKER (Ketahanan)", "=50*SLOPE('Data Per Kolom'!D2:D51,'Data Per Kolom'!A2:A51)", '=IF(B9<-1.947, "Rendah", IF(B9>0.223, "Tinggi", "Sedang"))')
+        (
+            "PANKER (Kecepatan)", 
+            "=SUM('Data Per Kolom'!D2:D51)/MAX('Data Per Kolom'!A2:A51)", 
+            '=IF(B6<7, "Rendah", IF(B6>10.9, "Tinggi", "Sedang"))'
+        ),
+        (
+            "TIANKER (Ketelitian)", 
+            "=SUM('Data Per Kolom'!C2:C51)", 
+            '=IF(B7>=36, "Rendah", IF(B7<=10, "Tinggi", "Sedang"))'
+        ),
+        (
+            "JANKER (Keajegan)", 
+            "=MAX('Data Per Kolom'!D2:D51)-MIN('Data Per Kolom'!D2:D51)", 
+            '=IF(B8<9, "Tinggi", IF(B8>12, "Rendah", "Sedang"))'
+        ),
+        (
+            "HANKER (Ketahanan)", 
+            "=50*SLOPE('Data Per Kolom'!D2:D51,'Data Per Kolom'!A2:A51)", 
+            '=IF(B9<-1.947, "Rendah", IF(B9>0.223, "Tinggi", "Sedang"))'
+        )
     ]
     
     for idx, (label, score_formula, criteria_formula) in enumerate(metrics, start=6):
