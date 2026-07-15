@@ -36,16 +36,24 @@ st.divider()
 st.warning(
     "**PERINGATAN PENTING:** Tes ini menggunakan penghitung waktu otomatis. "
     "Setiap kolom berjalan selama tepat **15 detik**. Ketika waktu habis, sistem akan "
-    "memindahkan Anda ke kolom berikutnya secara paksa. **Jangan refresh halaman selama tes berlangsung!**",
+    "memindahkan Anda ke kolom berikutnya secara paksa.",
     icon="⚠️"
 )
 
-st.warning(
-    "**NOTE:** Apabila mengerjakan tes ini melalui smartphone, "
-    "**Tolong gunakan Google Chrome dan pastikan website sudah dalam Mode Website**.  "
-    "Tekan titik tiga pada pojok kanan atas, dan cek mode website.",
-    icon="⚠️"
-)
+with st.expander("💡 TIPS & KETENTUAN PENTING SEBELUM MEMULAI (Wajib Baca)", expanded=True):
+    st.markdown(
+        """
+        Untuk memastikan hasil penilaian Anda akurat dan maksimal, mohon perhatikan hal-hal berikut:
+        
+        1. **Jangan Refresh Halaman:** Menyegarkan (refresh) atau menutup tab browser saat tes berlangsung akan **menghapus seluruh progres data Anda** secara permanen, dan Anda harus mengulang dari awal.
+        2. **Jika Menggunakan Smartphone:** * Pastikan browser berada dalam **Mode Situs Desktop (Desktop Site)**.
+           * Jika tombol numpad di layar terasa sempit, Anda bisa memutar ponsel ke posisi **Landscape**.
+           * Demi performa yang lebih maksimal, gunakan browser **Google Chrome**
+        3. **Matikan Notifikasi:** Pastikan untuk menonaktifkan atau menyembunyikan pop-up aplikasi lain (seperti WhatsApp/Telegram) agar ritme mengetik Anda tidak terganggu oleh gangguan visual.
+        4. **Fokus Total:** Ujian ini berjalan konstan selama kurang lebih 12-13 menit tanpa jeda. Pastikan Anda berada di area yang tenang sebelum menekan tombol mulai.
+        """
+    )
+    
 st.divider()
 
 st.markdown("### Panduan Pelaksanaan Tes:")
@@ -55,7 +63,7 @@ with col_g1:
         "**Cara Menjawab:**\n"
         "1. Anda akan melihat **dua angka aktif** berwarna biru di tengah layar.\n"
         "2. **Jumlahkan kedua angka** tersebut (Angka Atas + Angka Bawah).\n"
-        "3. Ambil **angka digit terakhir** saja dari hasil penjumlahan.\n"
+        "3. Ambil **angka digit terakhir (satuan)** saja dari hasil penjumlahan.\n"
         "   * *Contoh:* $4 + 5 = \\mathbf{9}$ (Ketik **9**)\n"
         "   * *Contoh:* $8 + 7 = 1\\mathbf{5}$ (Ketik **5**)"
     )
@@ -63,7 +71,7 @@ with col_g2:
     st.markdown(
         "**Metode Input & Kontrol:**\n"
         "* **Layar Sentuh/Mouse:** Anda bisa mengklik tombol angka yang tertera pada numpad digital di layar.\n"
-        "* Tes terdiri dari **50 Kolom berturut-turut**."
+        "* Tes terdiri dari **50 Kolom berturut-turut** yang akan secara otomatis reset setiap **15 detik**."
     )
     
 st.divider()
