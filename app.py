@@ -177,7 +177,7 @@ if current_step == "login":
 
     st.warning(
         "**NOTE:** Apabila mengerjakan tes ini melalui smartphone, "
-        "Pastikan website sudah dalam **Mode Website**.  "
+        "Tolong gunakan Google Chrome dan pastikan website sudah dalam **Mode Website**.  "
         "Tekan titik tiga pada pojok kanan atas, dan cek mode website.",
         icon="⚠️"
     )
