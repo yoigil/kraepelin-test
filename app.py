@@ -41,7 +41,7 @@ st.warning(
 )
 
 with st.expander("💡 TIPS & KETENTUAN PENTING SEBELUM MEMULAI (Wajib Baca)", expanded=True):
-    st.markdown(
+    st.warning(
         """
         Untuk memastikan hasil penilaian Anda akurat dan maksimal, mohon perhatikan hal-hal berikut:
         
