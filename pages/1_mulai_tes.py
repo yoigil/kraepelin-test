@@ -110,5 +110,5 @@ window.parent.document.addEventListener('keydown', handleKeyDown);
 """
 st.components.v1.html(js_listener, height=0, width=0)
 
-time.sleep(0.05)
+time.sleep(0.15)
 st.rerun()
